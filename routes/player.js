@@ -1,11 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const Player = require('../models/player');
+const verifyToken = require('../auth/VerifyToken');
+router.use(verifyToken);
 
 router.get('/', async (req, res) => {
     try {
         const players = await Player.find({});
-        // console.log(players);
         res.json(players)
     } catch (err) {
         res.json({ message: err })
@@ -27,11 +28,14 @@ router.post('/', async (req, res) => {
 
 router.get('/:playerId', async (req, res) => {
     try {
-        const player = await Player.findById(req.params.playerId).exec();
-        
+        const player = await Player.findById(req.params.playerId);
+        if(player === null){
+          res.json({ message: "Player's id invalid" })
+          return;
+        }
         res.json(player);
     } catch (err) {
-        res.json({ message: "Player's id invalid" })
+        res.json({ message: err })
         return;
     }
 

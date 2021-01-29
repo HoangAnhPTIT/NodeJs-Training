@@ -6,6 +6,10 @@ const Log = require('../models/log');
 const Tmp = require('../models/tmp')
 const { route } = require('./player');
 const { json } = require('body-parser');
+
+const verifyToken = require('../auth/VerifyToken');
+router.use(verifyToken);
+
 router.get('/', async (req, res) => {
   try {
     games = await Game.find();
